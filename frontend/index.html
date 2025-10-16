@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop CRUD</title>
+</head>
+<body>
+<h1>Shop Products</h1>
+
+<h2>Add Product</h2>
+<form id="product-form">
+    Name: <input type="text" id="name" required>
+    Price: <input type="number" id="price" step="0.01" required>
+    Quantity: <input type="number" id="quantity" required>
+    <button type="submit">Add</button>
+</form>
+
+<h2>Products</h2>
+<table border="1" id="products-table">
+    <tr><th>Name</th><th>Price</th><th>Quantity</th><th>Actions</th></tr>
+</table>
+
+<script>
+const API = "http://localhost:3000/products";
+
+async function fetchProducts() {
+    const res = await fetch(API);
+    const products = await res.json();
+    const table = document.getElementById('products-table');
+    table.innerHTML = '<tr><th>Name</th><th>Price</th><th>Quantity</th><th>Actions</th></tr>';
+    products.forEach(p => {
+        const row = table.insertRow();
+        row.insertCell(0).textContent = p.name;
+        row.insertCell(1).textContent = p.price.toFixed(2);
+        row.insertCell(2).textContent = p.quantity;
+        const actions = row.insertCell(3);
+        actions.innerHTML = `<button onclick="editProduct(${p.id})">Edit</button>
+                             <button onclick="deleteProduct(${p.id})">Delete</button>`;
+    });
+}
+
+document.getElementById('product-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    await fetch(API, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            name: document.getElementById('name').value,
+            price: parseFloat(document.getElementById('price').value),
+            quantity: parseInt(document.getElementById('quantity').value)
+        })
+    });
+    fetchProducts();
+    e.target.reset();
+});
+
+async function deleteProduct(id) {
+    await fetch(`${API}/${id}`, { method: 'DELETE' });
+    fetchProducts();
+}
+
+async function editProduct(id) {
+    const name = prompt("New name:");
+    const price = parseFloat(prompt("New price:"));
+    const quantity = parseInt(prompt("New quantity:"));
+    await fetch(`${API}/${id}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ name, price, quantity })
+    });
+    fetchProducts();
+}
+
+fetchProducts();
+</script>
+</body>
+</html>
