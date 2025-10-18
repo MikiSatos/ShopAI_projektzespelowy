@@ -1,17 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database');
+const db = require('../../database');
 const { validateProduct } = require('./validators');
 
 // --- GET /products ---
-// Получить все продукты
 router.get('/', (req, res) => {
     const products = db.prepare('SELECT * FROM products').all();
     res.json(products);
 });
 
 // --- GET /products/:id ---
-// Получить продукт по id
 router.get('/:id', (req, res) => {
     const product = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
     if (!product) return res.status(404).json({ error: 'Product not found' });
@@ -19,21 +17,20 @@ router.get('/:id', (req, res) => {
 });
 
 // --- POST /products ---
-// Создать новый продукт
 router.post('/', (req, res) => {
     const error = validateProduct(req.body);
     if (error) return res.status(400).json({ error });
 
-    const { name, price, quantity, category } = req.body;
-    const info = db.prepare(
-        'INSERT INTO products (name, price, quantity, category) VALUES (?, ?, ?, ?)'
-    ).run(name, price, quantity, category);
+    const { name, price, quantity, category, brand, discount } = req.body;
+    const info = db.prepare(`
+        INSERT INTO products (name, price, quantity, category, brand, discount)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `).run(name, price, quantity, category, brand, discount);
 
     res.status(201).json({ message: 'Product created', id: info.lastInsertRowid });
 });
 
 // --- PUT /products/:id ---
-// Обновить продукт
 router.put('/:id', (req, res) => {
     const product = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
     if (!product) return res.status(404).json({ error: 'Product not found' });
@@ -41,16 +38,17 @@ router.put('/:id', (req, res) => {
     const error = validateProduct(req.body);
     if (error) return res.status(400).json({ error });
 
-    const { name, price, quantity, category } = req.body;
-    db.prepare(
-        'UPDATE products SET name=?, price=?, quantity=?, category=? WHERE id=?'
-    ).run(name, price, quantity, category, req.params.id);
+    const { name, price, quantity, category, brand, discount } = req.body;
+    db.prepare(`
+        UPDATE products
+        SET name=?, price=?, quantity=?, category=?, brand=?, discount=?
+        WHERE id=?
+    `).run(name, price, quantity, category, brand, discount, req.params.id);
 
     res.json({ message: 'Product updated' });
 });
 
 // --- DELETE /products/:id ---
-// Удалить продукт
 router.delete('/:id', (req, res) => {
     const product = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
     if (!product) return res.status(404).json({ error: 'Product not found' });
