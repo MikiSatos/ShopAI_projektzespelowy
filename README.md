@@ -1,55 +1,54 @@
-# Shop CRUD - Wymaganie A
+# Shop CRUD - Requirement A
+## Run locally
+Go to the backend folder and install dependencies:
+```bash
+cd backend
+npm install
+node app.js
+Then open in a browser: http://localhost:3000/
 
-## 1. Uruchomienie lokalnie
+The frontend allows full CRUD for products: adding, editing, deleting, and viewing the list.
 
-1. Przejd� do backend:
-   cd backend
-2. Zainstaluj zale�no�ci:
-   npm install
-3. Uruchom serwer:
-   node app.js
-4. Otw�rz przegl�dark�:
-   http://localhost:3000/
-- Frontend pozwala na pe�ny CRUD produkt�w: dodawanie, edytowanie, usuwanie i przegl�danie listy.
+API Endpoints
+Method	Endpoint	Description
+GET	/products	Get all products
+GET	/products/:id	Get a product by ID
+POST	/products	Add a new product
+PUT	/products/:id	Update a product
+DELETE	/products/:id	Delete a product
+Field validation
 
-## 2. Endpoints API
+name (TEXT) - required
 
-| Method | Endpoint        | Opis                       |
-|--------|----------------|----------------------------|
-| GET    | /products       | Pobierz wszystkie produkty |
-| GET    | /products/:id   | Pobierz produkt po ID      |
-| POST   | /products       | Dodaj nowy produkt         |
-| PUT    | /products/:id   | Edytuj produkt             |
-| DELETE | /products/:id   | Usu� produkt               |
+price (REAL) - required
 
-### Walidacja p�l:
-- name (TEXT) � wymagany  
-- price (REAL) � wymagany  
-- quantity (INTEGER) � wymagany  
-- category (TEXT) � opcjonalny  
+quantity (INTEGER) - required
 
-### Kody HTTP:
-- 200 OK � operacja zako�czona powodzeniem (GET, PUT, DELETE)  
-- 201 Created � nowy produkt utworzony (POST)  
-- 400 Bad Request � brak wymaganych p�l lub b��dny typ danych  
-- 404 Not Found � nie znaleziono produktu po ID
+category (TEXT) - optional
 
-## 3. Encja: Product
+HTTP codes
 
-| Pole      | Typ       | Opis                     |
-|-----------|----------|--------------------------|
-| id        | INTEGER  | Klucz g��wny, autoinkrementacja |
-| name      | TEXT     | Nazwa produktu          |
-| price     | REAL     | Cena produktu           |
-| quantity  | INTEGER  | Ilo�� produktu          |
-| category  | TEXT     | Kategoria produktu (opcjonalnie) |
+200 OK - operation successful (GET, PUT, DELETE)
 
-## 4. Zrzut ekranu UI
+201 Created - new product created (POST)
 
-![UI Screenshot](frontend/screenshot.png)
+400 Bad Request - missing required fields or invalid data type
 
-## 5. Git / Repo
+404 Not Found - product not found by ID
 
-- Ka�da encja w osobnym module: backend/modules/products  
-- Ga���: feature/products-crud  
-- Pull Request do main zawiera: co zosta�o zaimplementowane, instrukcje uruchomienia lokalnego i zrzut ekranu UI
+Entity: Product
+Field	Type	Description
+id	INTEGER	Primary key, auto-increment
+name	TEXT	Product name
+price	REAL	Product price
+quantity	INTEGER	Product quantity
+category	TEXT	Product category (optional)
+UI Screenshot
+
+Git / Repository
+
+Each entity is in a separate module: backend/modules/products
+
+Branch: feature/products-crud
+
+Pull request to main should include implemented features, instructions to run locally, and the UI screenshot
