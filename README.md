@@ -47,7 +47,7 @@ git branch
 
 ## 4. Zrzut ekranu UI
 
-![UI Screenshot](frontend/screenshot.png)
+![Shop Products UI](frontend/screenshot.png)
 
 ## 5. Git / Repo
 
