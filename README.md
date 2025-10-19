@@ -2,15 +2,15 @@
 
 ## 1. Uruchomienie lokalnie
 
-1. PrzejdŸ do backend:
+1. Przejdï¿½ do backend:
    cd backend
-2. Zainstaluj zale¿noœci:
+2. Zainstaluj zaleï¿½noï¿½ci:
    npm install
 3. Uruchom serwer:
    node app.js
-4. Otwórz przegl¹darkê:
+4. Otwï¿½rz przeglï¿½darkï¿½:
    http://localhost:3000/
-- Frontend pozwala na pe³ny CRUD produktów: dodawanie, edytowanie, usuwanie i przegl¹danie listy.
+- Frontend pozwala na peï¿½ny CRUD produktï¿½w: dodawanie, edytowanie, usuwanie i przeglï¿½danie listy.
 
 ## 2. Endpoints API
 
@@ -20,28 +20,28 @@
 | GET    | /products/:id   | Pobierz produkt po ID      |
 | POST   | /products       | Dodaj nowy produkt         |
 | PUT    | /products/:id   | Edytuj produkt             |
-| DELETE | /products/:id   | Usuñ produkt               |
+| DELETE | /products/:id   | Usuï¿½ produkt               |
 
-### Walidacja pól:
-- name (TEXT) – wymagany  
-- price (REAL) – wymagany  
-- quantity (INTEGER) – wymagany  
-- category (TEXT) – opcjonalny  
+### Walidacja pï¿½l:
+- name (TEXT) ï¿½ wymagany  
+- price (REAL) ï¿½ wymagany  
+- quantity (INTEGER) ï¿½ wymagany  
+- category (TEXT) ï¿½ opcjonalny  
 
 ### Kody HTTP:
-- 200 OK – operacja zakoñczona powodzeniem (GET, PUT, DELETE)  
-- 201 Created – nowy produkt utworzony (POST)  
-- 400 Bad Request – brak wymaganych pól lub b³êdny typ danych  
-- 404 Not Found – nie znaleziono produktu po ID
+- 200 OK ï¿½ operacja zakoï¿½czona powodzeniem (GET, PUT, DELETE)  
+- 201 Created ï¿½ nowy produkt utworzony (POST)  
+- 400 Bad Request ï¿½ brak wymaganych pï¿½l lub bï¿½ï¿½dny typ danych  
+- 404 Not Found ï¿½ nie znaleziono produktu po ID
 
 ## 3. Encja: Product
 
 | Pole      | Typ       | Opis                     |
 |-----------|----------|--------------------------|
-| id        | INTEGER  | Klucz g³ówny, autoinkrementacja |
+| id        | INTEGER  | Klucz gï¿½ï¿½wny, autoinkrementacja |
 | name      | TEXT     | Nazwa produktu          |
 | price     | REAL     | Cena produktu           |
-| quantity  | INTEGER  | Iloœæ produktu          |
+| quantity  | INTEGER  | Iloï¿½ï¿½ produktu          |
 | category  | TEXT     | Kategoria produktu (opcjonalnie) |
 
 ## 4. Zrzut ekranu UI
@@ -50,6 +50,6 @@
 
 ## 5. Git / Repo
 
-- Ka¿da encja w osobnym module: backend/modules/products  
-- Ga³¹Ÿ: feature/products-crud  
-- Pull Request do main zawiera: co zosta³o zaimplementowane, instrukcje uruchomienia lokalnego i zrzut ekranu UI
+- Kaï¿½da encja w osobnym module: backend/modules/products  
+- Gaï¿½ï¿½ï¿½: feature/products-crud  
+- Pull Request do main zawiera: co zostaï¿½o zaimplementowane, instrukcje uruchomienia lokalnego i zrzut ekranu UI
