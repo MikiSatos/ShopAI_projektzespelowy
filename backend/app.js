@@ -1,13 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Для __dirname в ES модулях
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Подключаем модель (создаёт таблицу, если её нет)
-require('./modules/products/model');
+import './modules/products/model.js';
 
 // Подключаем роуты
-const productsRoutes = require('./modules/products/routes');
+import productsRoutes from './modules/products/routes.js';
 
 const app = express();
 
