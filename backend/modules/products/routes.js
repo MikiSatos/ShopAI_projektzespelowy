@@ -4,7 +4,7 @@ const router = express.Router();
 import db from '../../database.js';
 import { validateProduct } from './validators.js';
 
-// --- GET all products
+// GET all products
 router.get('/', (req, res) => {
     db.all('SELECT * FROM products', [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// --- GET product by id
+// GET product by id
 router.get('/:id', (req, res) => {
     db.get('SELECT * FROM products WHERE id = ?', [req.params.id], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -21,7 +21,7 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// --- POST create product
+// POST create product
 router.post('/', (req, res) => {
     const error = validateProduct(req.body);
     if (error) return res.status(400).json({ error });
@@ -37,7 +37,7 @@ router.post('/', (req, res) => {
     );
 });
 
-// --- PUT update product
+// PUT update product
 router.put('/:id', (req, res) => {
     const { name, price, quantity, category } = req.body;
     const error = validateProduct(req.body);
@@ -54,7 +54,7 @@ router.put('/:id', (req, res) => {
     );
 });
 
-// --- DELETE product
+// DELETE product
 router.delete('/:id', (req, res) => {
     db.run('DELETE FROM products WHERE id=?', [req.params.id], function(err) {
         if (err) return res.status(500).json({ error: err.message });
