@@ -9,7 +9,7 @@
 3. Start the server:
    node app.js
 4. ## 🌍 Online demo
-[Kliknij tutaj, aby otworzyć aplikację](https://twoj-adres-na-render.com)
+[Kliknij tutaj, aby otworzyć aplikację](https://projekt-crud-ilya-raiko.onrender.com/)
 
 ## 🧾 Konto testowe
 - Login: test@example.com  
