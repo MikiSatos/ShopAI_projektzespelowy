@@ -1,7 +1,7 @@
 {
   "name": "projekt-crud-ilya-raiko",
   "version": "1.0.0",
-  "main": "backend/app.js",
+  "main": "backend/app.cjs",
   "scripts": {
     "start": "node backend/app.cjs"
   },
