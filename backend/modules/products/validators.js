@@ -7,4 +7,4 @@ function validateProduct(data) {
     return null;
 }
 
-module.exports = { validateProduct };
+export { validateProduct };
