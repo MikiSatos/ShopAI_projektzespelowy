@@ -1,6 +1,5 @@
-import { db } from "../../database.js";
+const db = require('../../database');
 
-// создаём таблицу products, если её нет
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS products (
@@ -11,10 +10,7 @@ db.serialize(() => {
       category TEXT
     )
   `, (err) => {
-    if (err) {
-      console.error("❌ Ошибка при создании таблицы:", err.message);
-    } else {
-      console.log("✅ Таблица products готова");
-    }
+    if (err) console.error("❌ Ошибка при создании таблицы:", err.message);
+    else console.log("✅ Таблица products готова");
   });
 });
