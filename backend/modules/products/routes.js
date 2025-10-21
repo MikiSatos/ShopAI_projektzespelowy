@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../../database'); 
+import { db } from "../../database.js";
 const { validateProduct } = require('./validators');
 
 // --- GET /products ---
