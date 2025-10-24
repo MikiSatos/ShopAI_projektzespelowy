@@ -8,9 +8,13 @@
    npm install
 3. Start the server:
    node app.js
-4. Open in browser:
-   http://localhost:3000/
-- The frontend allows full CRUD for products: adding, editing, deleting, and viewing the list.
+4. ## 🌍 Online demo
+[Kliknij tutaj, aby otworzyć aplikację](https://projekt-crud-ilya-raiko.onrender.com/)
+
+## 🧾 Konto testowe
+- Login: test@example.com  
+- Hasło: test123
+
 
 ## 2. API Endpoints
 

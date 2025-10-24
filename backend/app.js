@@ -1,33 +1,33 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Подключение модели (создаёт таблицу, если ещё нет)
-require('./modules/products/model');
+// Для __dirname в ES модулях
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Подключение роутов products
-const productsRoutes = require('./modules/products/routes');
+// Подключаем модель (создаёт таблицу, если её нет)
+import './modules/products/model.js';
+
+// Подключаем роуты
+import productsRoutes from './modules/products/routes.js';
 
 const app = express();
 
-// --- Middleware ---
 app.use(cors());
 app.use(bodyParser.json());
 
-// Раздача фронтенда (HTML/JS/CSS)
+// Раздача фронтенда
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// --- API ---
 app.use('/products', productsRoutes);
 
-// --- Главная страница ---
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// --- Запуск сервера ---
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// --- Render назначает порт через process.env.PORT ---
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

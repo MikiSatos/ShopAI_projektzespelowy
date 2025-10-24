@@ -1,4 +1,4 @@
-const db = require('../../database');
+import db from '../../database.js';
 
 db.prepare(`
 CREATE TABLE IF NOT EXISTS products (
@@ -11,3 +11,5 @@ CREATE TABLE IF NOT EXISTS products (
     discount REAL NOT NULL DEFAULT 0 CHECK(discount >= 0)
 )
 `).run();
+
+console.log("✅ Table 'products' ready (with brand & discount fields)");

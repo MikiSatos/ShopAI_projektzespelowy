@@ -1,60 +1,71 @@
-const express = require('express');
+import express from 'express';
+import db from '../../database.js';
+import { validateProduct } from './validators.js';
+
 const router = express.Router();
-const db = require('../../database');
-const { validateProduct } = require('./validators');
 
-// --- GET /products ---
+// GET all products
 router.get('/', (req, res) => {
-    const products = db.prepare('SELECT * FROM products').all();
-    res.json(products);
+  db.all('SELECT * FROM products', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
-// --- GET /products/:id ---
+// GET product by id
 router.get('/:id', (req, res) => {
-    const product = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
-    if (!product) return res.status(404).json({ error: 'Product not found' });
-    res.json(product);
+  db.get('SELECT * FROM products WHERE id = ?', [req.params.id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ error: 'Product not found' });
+    res.json(row);
+  });
 });
 
-// --- POST /products ---
+// POST create product
 router.post('/', (req, res) => {
-    const error = validateProduct(req.body);
-    if (error) return res.status(400).json({ error });
+  const error = validateProduct(req.body);
+  if (error) return res.status(400).json({ error });
 
-    const { name, price, quantity, category, brand, discount } = req.body;
-    const info = db.prepare(`
-        INSERT INTO products (name, price, quantity, category, brand, discount)
-        VALUES (?, ?, ?, ?, ?, ?)
-    `).run(name, price, quantity, category, brand, discount);
-
-    res.status(201).json({ message: 'Product created', id: info.lastInsertRowid });
+  const { name, price, quantity, category, brand, discount } = req.body;
+  db.run(
+    `INSERT INTO products (name, price, quantity, category, brand, discount)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [name, price, quantity, category, brand, discount],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(201).json({ message: 'Product created', id: this.lastID });
+    }
+  );
 });
 
-// --- PUT /products/:id ---
+// PUT update product
 router.put('/:id', (req, res) => {
-    const product = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
-    if (!product) return res.status(404).json({ error: 'Product not found' });
+  const error = validateProduct(req.body);
+  if (error) return res.status(400).json({ error });
 
-    const error = validateProduct(req.body);
-    if (error) return res.status(400).json({ error });
-
-    const { name, price, quantity, category, brand, discount } = req.body;
-    db.prepare(`
-        UPDATE products
-        SET name=?, price=?, quantity=?, category=?, brand=?, discount=?
-        WHERE id=?
-    `).run(name, price, quantity, category, brand, discount, req.params.id);
-
-    res.json({ message: 'Product updated' });
+  const { name, price, quantity, category, brand, discount } = req.body;
+  db.run(
+    `UPDATE products
+     SET name=?, price=?, quantity=?, category=?, brand=?, discount=?
+     WHERE id=?`,
+    [name, price, quantity, category, brand, discount, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      if (this.changes === 0)
+        return res.status(404).json({ error: 'Product not found' });
+      res.json({ message: 'Product updated' });
+    }
+  );
 });
 
-// --- DELETE /products/:id ---
+// DELETE product
 router.delete('/:id', (req, res) => {
-    const product = db.prepare('SELECT * FROM products WHERE id=?').get(req.params.id);
-    if (!product) return res.status(404).json({ error: 'Product not found' });
-
-    db.prepare('DELETE FROM products WHERE id=?').run(req.params.id);
+  db.run('DELETE FROM products WHERE id=?', [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    if (this.changes === 0)
+      return res.status(404).json({ error: 'Product not found' });
     res.json({ message: 'Product deleted' });
+  });
 });
 
-module.exports = router;
+export default router;
