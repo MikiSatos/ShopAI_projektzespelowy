@@ -11,10 +11,12 @@
   <div class="container">
     <h2>Add Product</h2>
     <div class="form-group">
-      <input type="text" id="name" placeholder="Name">
-      <input type="number" id="price" placeholder="Price">
-      <input type="number" id="quantity" placeholder="Quantity">
+      <input type="text" id="name" placeholder="Name" required>
+      <input type="number" id="price" placeholder="Price" step="0.01" required>
+      <input type="number" id="quantity" placeholder="Quantity" required>
       <input type="text" id="category" placeholder="Category">
+      <input type="text" id="brand" placeholder="Brand" required>
+      <input type="number" id="discount" placeholder="Discount (%)" step="0.01" min="0" value="0" required>
       <button onclick="addProduct()">Add</button>
     </div>
 
@@ -27,6 +29,8 @@
           <th>Price</th>
           <th>Quantity</th>
           <th>Category</th>
+          <th>Brand</th>
+          <th>Discount (%)</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -52,7 +56,10 @@
             <td>${p.price.toFixed(2)}</td>
             <td>${p.quantity}</td>
             <td>${p.category || ""}</td>
+            <td>${p.brand || ""}</td>
+            <td>${p.discount?.toFixed(2) || "0.00"}</td>
             <td>
+              <button class="btn-edit" onclick="editProduct(${p.id})">Edit</button>
               <button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button>
             </td>
           `;
@@ -69,8 +76,10 @@
       const price = parseFloat(document.getElementById("price").value);
       const quantity = parseInt(document.getElementById("quantity").value);
       const category = document.getElementById("category").value;
+      const brand = document.getElementById("brand").value;
+      const discount = parseFloat(document.getElementById("discount").value);
 
-      if (!name || isNaN(price) || isNaN(quantity)) {
+      if (!name || isNaN(price) || isNaN(quantity) || !brand || isNaN(discount)) {
         alert("Please fill all required fields!");
         return;
       }
@@ -79,16 +88,30 @@
         await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, price, quantity, category })
+          body: JSON.stringify({ name, price, quantity, category, brand, discount })
         });
         fetchProducts();
-        document.getElementById("name").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("quantity").value = "";
-        document.getElementById("category").value = "";
+        document.querySelectorAll("input").forEach(i => i.value = "");
       } catch (err) {
         console.error("Error adding product:", err);
       }
+    }
+
+    // --- Edit product ---
+    async function editProduct(id) {
+      const name = prompt("New name:");
+      const price = parseFloat(prompt("New price:"));
+      const quantity = parseInt(prompt("New quantity:"));
+      const category = prompt("New category:");
+      const brand = prompt("New brand:");
+      const discount = parseFloat(prompt("New discount (%):"));
+
+      await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, price, quantity, category, brand, discount })
+      });
+      fetchProducts();
     }
 
     // --- Delete product ---

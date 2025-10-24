@@ -1,59 +1,79 @@
-# Shop CRUD - Requirement A
+#  Shop CRUD – Część B (rozszerzenie projektu partnera)
 
-## 1. Run locally
+## Nowe pola w encji Product
+W ramach drugiego etapu projektu **CRUD × 2 Encje** dodałam dwa nowe pola do encji **Product**:
 
-1. Go to backend:
-   cd backend
-2. Install dependencies:
-   npm install
-3. Start the server:
-   node app.js
-4. ## 🌍 Online demo
-[Kliknij tutaj, aby otworzyć aplikację](https://projekt-crud-ilya-raiko.onrender.com/)
+| Pole       | Typ   | Opis                                      |
+|-------------|--------|-------------------------------------------|
+| `brand`     | TEXT  | Marka produktu (wymagane)                 |
+| `discount`  | REAL  | Zniżka (%) — domyślnie 0, ≥ 0              |
 
-## 🧾 Konto testowe
-- Login: test@example.com  
-- Hasło: test123
+---
+
+## Wprowadzone zmiany
+- zaktualizowano **model bazy danych** (`model.js`) – dodano kolumny *brand* i *discount*  
+- zaktualizowano **walidację danych** (`validators.js`)  
+- rozszerzono **endpointy API** (`routes.js`) o obsługę nowych pól  
+- zaktualizowano **frontend** (`index.html`) – formularz, tabela i edycja produktów  
+
+---
+
+## Demo online
+Aplikacja jest dostępna publicznie pod adresem:  
+ [https://projekt-crud-ilya-raiko.onrender.com/](https://projekt-crud-ilya-raiko.onrender.com/)
+
+---
+
+## Uruchomienie lokalne (opcjonalnie)
+```bash
+cd backend
+npm install
+node app.js
+Następnie otwórz http://localhost:3000
+
+Endpointy API (zmodyfikowane)
+Metoda	Endpoint	Opis
+POST	/products	Dodanie produktu z polami brand i discount
+PUT	/products/:id	Edycja produktu z nowymi polami
+
+Walidacja pól:
+
+brand – wymagane (TEXT)
+
+discount – liczba ≥ 0 (domyślnie 0)
+
+Przykładowe zapytanie
+json
+Copy code
+{
+  "name": "Headphones",
+  "price": 249.99,
+  "quantity": 15,
+  "category": "Electronics",
+  "brand": "Sony",
+  "discount": 10
+}
+Odpowiedź:
+
+json
+Copy code
+{ "message": "Product created", "id": 7 }
+Interfejs użytkownika
+Zaktualizowany interfejs pozwala na:
+
+dodawanie i edytowanie pól Brand oraz Discount (%)
+
+wyświetlanie obu pól w tabeli produktów
+
+pełny CRUD (Create / Read / Update / Delete)
 
 
-## 2. API Endpoints
 
-| Method | Endpoint        | Description                   |
-|--------|----------------|-------------------------------|
-| GET    | /products       | Get all products              |
-| GET    | /products/:id   | Get a product by ID           |
-| POST   | /products       | Add a new product             |
-| PUT    | /products/:id   | Edit a product                |
-| DELETE | /products/:id   | Delete a product              |
+Informacje o Pull Request
+Gałąź: feature/add-brand-and-discount
 
-### Field validation:
-- name (TEXT) - required  
-- price (REAL) - required  
-- quantity (INTEGER) - required  
-- category (TEXT) - optional  
+Opis: rozszerzenie encji Product o pola brand i discount
 
-### HTTP codes:
-- 200 OK - operation successful (GET, PUT, DELETE)  
-- 201 Created - new product created (POST)  
-- 400 Bad Request - missing required fields or invalid data type  
-- 404 Not Found - product not found by ID
+Autor: Aidana Abylkasymova
 
-## 3. Entity: Product
-
-| Field      | Type       | Description                     |
-|----------- |----------- |-------------------------------- |
-| id         | INTEGER    | Primary key, auto-increment     |
-| name       | TEXT       | Product name                    |
-| price      | REAL       | Product price                   |
-| quantity   | INTEGER    | Product quantity                |
-| category   | TEXT       | Product category (optional)     |
-
-## 4. UI Screenshot
-
-![UI Screenshot](frontend/screenshot.png)
-
-## 5. Git / Repository
-
-- Each entity is in a separate module: backend/modules/products  
-- Branch: feature/products-crud  
-- Pull request to main should include implemented features, instructions to run locally, and the UI screenshot
+Status: gotowe do oceny / scalenia
