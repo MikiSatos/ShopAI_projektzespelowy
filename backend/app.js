@@ -15,7 +15,7 @@ import authRoutes from './modules/auth/routes.js';
 const app = express();
 
 app.use(cors({
-  origin: 'https://projekt-crud-ilya-raiko-1.onrender.com',
+  origin: 'https://projekt-crud-ilya-raiko-1.onrender.com/',
   credentials: true
 }));
 

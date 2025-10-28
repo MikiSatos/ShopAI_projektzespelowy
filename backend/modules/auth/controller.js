@@ -34,7 +34,11 @@ export const login = async (req, res) => {
     if (!match) return res.status(400).json({ message: "Niepoprawny login lub hasło" });
 
     const token = jwt.sign({ id: user.id, login: user.login, rola: user.rola }, SECRET, { expiresIn: '1h' });
-    res.cookie('token', token, { httpOnly: true });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
     res.json({ message: "Zalogowano pomyślnie" });
   } catch (err) {
     console.error(err);
