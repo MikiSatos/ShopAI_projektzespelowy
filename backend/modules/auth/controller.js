@@ -33,11 +33,12 @@ export const login = async (req, res) => {
     const match = await bcrypt.compare(password, user.hasloHash);
     if (!match) return res.status(400).json({ message: "Niepoprawny login lub hasło" });
 
+    // создаем JWT cookie
     const token = jwt.sign({ id: user.id, login: user.login, rola: user.rola }, SECRET, { expiresIn: '1h' });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none'
+      secure: process.env.NODE_ENV === 'production', // обязательно на проде
+      sameSite: 'none' // чтобы cookie передавалось между фронтом и бэком
     });
     res.json({ message: "Zalogowano pomyślnie" });
   } catch (err) {
