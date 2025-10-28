@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Register</h1>
+    <div class="form-group">
+      <input type="text" id="login" placeholder="Login">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="register()">Register</button>
+    </div>
+    <p id="msg" style="color:red;"></p>
+    <p>Masz konto? <a href="login.html">Zaloguj się</a></p>
+  </div>
+
+  <script>
+    async function register() {
+      const loginVal = document.getElementById("login").value;
+      const passwordVal = document.getElementById("password").value;
+      const msgEl = document.getElementById("msg");
+
+      if (!loginVal || !passwordVal) {
+        msgEl.innerText = "Wypełnij wszystkie pola!";
+        return;
+      }
+
+      try {
+        const res = await fetch("/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ login: loginVal, password: passwordVal })
+        });
+
+        if (res.ok) {
+          window.location.href = "login.html";
+        } else {
+          const data = await res.json();
+          msgEl.innerText = data.message || "Błąd rejestracji!";
+        }
+      } catch (err) {
+        console.error("Register error:", err);
+        msgEl.innerText = "Błąd serwera!";
+      }
+    }
+  </script>
+</body>
+</html>

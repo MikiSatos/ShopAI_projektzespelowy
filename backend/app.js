@@ -1,33 +1,34 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Для __dirname в ES модулях
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Подключаем модель (создаёт таблицу, если её нет)
 import './modules/products/model.js';
-
-// Подключаем роуты
 import productsRoutes from './modules/products/routes.js';
+import authRoutes from './modules/auth/routes.js';
 
 const app = express();
 
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors({
+  origin: 'https://projekt-crud-ilya-raiko.onrender.com',
+  credentials: true
+}));
 
-// Раздача фронтенда
+app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.use('/products', productsRoutes);
+app.use('/auth', authRoutes);
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../frontend/index.html')));
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '../frontend/login.html')));
+app.get('/register', (req, res) => res.sendFile(path.join(__dirname, '../frontend/register.html')));
 
-// --- Render назначает порт через process.env.PORT ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

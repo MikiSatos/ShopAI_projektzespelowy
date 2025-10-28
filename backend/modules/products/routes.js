@@ -3,8 +3,9 @@ const router = express.Router();
 
 import db from '../../database.js';
 import { validateProduct } from './validators.js';
+import auth from '../../middleware/auth.js'; // middleware
 
-// GET all products
+// GET all products (public)
 router.get('/', (req, res) => {
     db.all('SELECT * FROM products', [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -12,7 +13,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// GET product by id
+// GET product by id (public)
 router.get('/:id', (req, res) => {
     db.get('SELECT * FROM products WHERE id = ?', [req.params.id], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -21,8 +22,8 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// POST create product
-router.post('/', (req, res) => {
+// POST create product (auth)
+router.post('/', auth, (req, res) => {
     const error = validateProduct(req.body);
     if (error) return res.status(400).json({ error });
 
@@ -37,8 +38,8 @@ router.post('/', (req, res) => {
     );
 });
 
-// PUT update product
-router.put('/:id', (req, res) => {
+// PUT update product (auth)
+router.put('/:id', auth, (req, res) => {
     const { name, price, quantity, category } = req.body;
     const error = validateProduct(req.body);
     if (error) return res.status(400).json({ error });
@@ -54,8 +55,8 @@ router.put('/:id', (req, res) => {
     );
 });
 
-// DELETE product
-router.delete('/:id', (req, res) => {
+// DELETE product (auth)
+router.delete('/:id', auth, (req, res) => {
     db.run('DELETE FROM products WHERE id=?', [req.params.id], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         if (this.changes === 0) return res.status(404).json({ error: 'Product not found' });

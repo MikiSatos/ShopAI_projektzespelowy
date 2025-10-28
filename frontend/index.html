@@ -8,9 +8,13 @@
 </head>
 <body>
   <h1>Shop Products</h1>
+
+  <p id="authStatus">Sprawdzanie logowania...</p>
+  <button id="logoutBtn" style="display:none;">Wyloguj</button>
+
   <div class="container">
     <h2>Add Product</h2>
-    <div class="form-group">
+    <div class="form-group" id="addForm">
       <input type="text" id="name" placeholder="Name">
       <input type="number" id="price" placeholder="Price">
       <input type="number" id="quantity" placeholder="Quantity">
@@ -36,11 +40,41 @@
 
   <script>
     const API_URL = "/products";
+    const AUTH_URL = "/auth/me";
 
-    // --- Fetch products and render table ---
+    let isLoggedIn = false;
+    const authStatusEl = document.getElementById("authStatus");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const addForm = document.getElementById("addForm");
+
+    logoutBtn.addEventListener("click", async () => {
+      await fetch("/auth/logout", { method: "POST", credentials: "include" });
+      window.location.reload();
+    });
+
+    async function checkAuth() {
+      try {
+        const res = await fetch(AUTH_URL, { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          isLoggedIn = true;
+          authStatusEl.innerText = `Zalogowano jako: ${data.user.login}`;
+          logoutBtn.style.display = "inline-block";
+          addForm.style.display = "flex";
+        } else {
+          isLoggedIn = false;
+          authStatusEl.innerText = "Niezalogowany użytkownik";
+          logoutBtn.style.display = "none";
+          addForm.style.display = "none";
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      }
+    }
+
     async function fetchProducts() {
       try {
-        const res = await fetch(API_URL);
+        const res = await fetch(API_URL, { credentials: "include" });
         const products = await res.json();
         const tbody = document.querySelector("#productsTable tbody");
         tbody.innerHTML = "";
@@ -53,7 +87,7 @@
             <td>${p.quantity}</td>
             <td>${p.category || ""}</td>
             <td>
-              <button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button>
+              <button class="btn-delete" ${!isLoggedIn ? "disabled" : ""} onclick="deleteProduct(${p.id})">Delete</button>
             </td>
           `;
           tbody.appendChild(tr);
@@ -63,8 +97,9 @@
       }
     }
 
-    // --- Add new product ---
     async function addProduct() {
+      if (!isLoggedIn) return alert("Musisz się zalogować!");
+
       const name = document.getElementById("name").value;
       const price = parseFloat(document.getElementById("price").value);
       const quantity = parseInt(document.getElementById("quantity").value);
@@ -79,6 +114,7 @@
         await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify({ name, price, quantity, category })
         });
         fetchProducts();
@@ -91,19 +127,21 @@
       }
     }
 
-    // --- Delete product ---
-    async function deleteProduct(id) {
-      if(!confirm("Are you sure you want to delete this product?")) return;
+    window.deleteProduct = async function(id) {
+      if (!isLoggedIn) return alert("Musisz się zalogować!");
+      if (!confirm("Are you sure you want to delete this product?")) return;
       try {
-        await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        await fetch(`${API_URL}/${id}`, { method: "DELETE", credentials: "include" });
         fetchProducts();
       } catch (err) {
         console.error("Error deleting product:", err);
       }
-    }
+    };
 
-    // Initial load
-    fetchProducts();
+    window.onload = async () => {
+      await checkAuth();
+      fetchProducts();
+    };
   </script>
 </body>
 </html>

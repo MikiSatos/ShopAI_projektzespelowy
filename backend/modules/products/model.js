@@ -10,7 +10,7 @@ db.serialize(() => {
       category TEXT
     )
   `, (err) => {
-    if (err) console.error("❌ Ошибка при создании таблицы:", err.message);
+    if (err) console.error("❌ Ошибка при создании таблицы products:", err.message);
     else console.log("✅ Таблица products готова");
   });
 });

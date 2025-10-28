@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Login</h1>
+    <div class="form-group">
+      <input type="text" id="login" placeholder="Login">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Log In</button>
+    </div>
+    <p id="msg" style="color:red;"></p>
+    <p>Nie masz konta? <a href="register.html">Zarejestruj się</a></p>
+  </div>
+
+  <script>
+    async function login() {
+      const loginVal = document.getElementById("login").value;
+      const passwordVal = document.getElementById("password").value;
+      const msgEl = document.getElementById("msg");
+
+      if (!loginVal || !passwordVal) {
+        msgEl.innerText = "Wypełnij wszystkie pola!";
+        return;
+      }
+
+      try {
+        const res = await fetch("/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ login: loginVal, password: passwordVal })
+        });
+
+        if (res.ok) {
+          window.location.href = "index.html";
+        } else {
+          const data = await res.json();
+          msgEl.innerText = data.message || "Błąd logowania!";
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        msgEl.innerText = "Błąd serwera!";
+      }
+    }
+  </script>
+</body>
+</html>
